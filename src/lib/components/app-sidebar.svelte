@@ -1,10 +1,28 @@
 <script lang="ts" module>
+	import BotIcon from '@lucide/svelte/icons/bot';
+
 	const data = {
 		user: {
 			name: 'shadcn',
 			email: 'm@example.com',
 			avatar: ''
 		},
+		playlists: [
+			{
+				id: '1',
+				name: 'My Playlist #4',
+				imageUrl: '',
+				songCount: 24,
+				owner: 'Eka'
+			},
+			{
+				id: '2',
+				name: 'My Playlist #3',
+				imageUrl: '',
+				songCount: 18,
+				owner: 'Eka'
+			}
+		],
 		navMain: [],
 		navSecondary: []
 	};
@@ -42,7 +60,7 @@
 		</Sidebar.Menu>
 	</Sidebar.Header>
 	<Sidebar.Content>
-		<NavMain items={data.navMain} />
+		<NavMain playlists={data.playlists} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<NavUser user={data.user} />
