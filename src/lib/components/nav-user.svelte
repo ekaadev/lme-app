@@ -1,14 +1,18 @@
 <script lang="ts">
-	import ChevronsUpDownIcon from "@lucide/svelte/icons/chevrons-up-down";
-	import LogOutIcon from "@lucide/svelte/icons/log-out";
+	import { goto, invalidateAll } from '$app/navigation';
+	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
+	import LogOutIcon from '@lucide/svelte/icons/log-out';
+	import HistoryIcon from '@lucide/svelte/icons/history';
 
-	import * as Avatar from "$lib/components/ui/avatar/index.js";
-	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
-	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import { useSidebar } from "$lib/components/ui/sidebar/index.js";
+	import * as Avatar from '$lib/components/ui/avatar/index.js';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
+	import { logout } from '$lib/api/auth';
+	import { authStore } from '$lib/stores/auth.svelte';
 
 	let {
-		user,
+		user
 	}: {
 		user: {
 			name: string;
@@ -18,6 +22,40 @@
 	} = $props();
 
 	const sidebar = useSidebar();
+
+	// State untuk loading saat logout
+	let isLoggingOut = $state(false);
+
+	// Handle logout
+	async function handleLogout() {
+		isLoggingOut = true;
+		try {
+			await logout();
+
+			// Clear auth store
+			authStore.clear();
+
+			// Invalidate semua data dan redirect ke login
+			await invalidateAll();
+			await goto('/login');
+		} catch (error) {
+			console.error('Logout failed:', error);
+			// Tetap redirect ke login meski gagal
+			await goto('/login');
+		} finally {
+			isLoggingOut = false;
+		}
+	}
+
+	// Ambil inisial dari nama user untuk avatar fallback
+	function getInitials(name: string): string {
+		return name
+			.split(' ')
+			.map((word) => word[0])
+			.join('')
+			.toUpperCase()
+			.slice(0, 2);
+	}
 </script>
 
 <Sidebar.Menu>
@@ -32,7 +70,7 @@
 					>
 						<Avatar.Root class="size-8 rounded-lg">
 							<Avatar.Image src={user.avatar} alt={user.name} />
-							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
+							<Avatar.Fallback class="rounded-lg">{getInitials(user.name)}</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-start text-sm leading-tight">
 							<span class="truncate font-medium">{user.name}</span>
@@ -51,7 +89,7 @@
 					<div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
 						<Avatar.Root class="size-8 rounded-lg">
 							<Avatar.Image src={user.avatar} alt={user.name} />
-							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
+							<Avatar.Fallback class="rounded-lg">{getInitials(user.name)}</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-start text-sm leading-tight">
 							<span class="truncate font-medium">{user.name}</span>
@@ -61,8 +99,19 @@
 				</DropdownMenu.Label>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item>
+					<a href="/history" class="flex w-full items-center gap-2">
+						<HistoryIcon />
+						History
+					</a>
+				</DropdownMenu.Item>
+				<DropdownMenu.Separator />
+				<DropdownMenu.Item onclick={handleLogout} disabled={isLoggingOut}>
 					<LogOutIcon />
-					Log out
+					{#if isLoggingOut}
+						Logging out...
+					{:else}
+						Log out
+					{/if}
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
