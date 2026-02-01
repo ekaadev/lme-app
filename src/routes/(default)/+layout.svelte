@@ -1,5 +1,7 @@
 <!-- Sidebar Layout -->
 <script lang="ts">
+	import type { LayoutData } from './$types';
+
 	// Components UI
 	import AppSidebar from '@/components/app-sidebar.svelte';
 	import AppSidebarRight from '@/components/app-sidebar-right.svelte';
@@ -13,13 +15,13 @@
 	import { MoonIcon } from 'lucide-svelte';
 	import { PanelRightIcon } from 'lucide-svelte';
 
-	// Props
-	let { children } = $props();
+	// Props termasuk data dari server load
+	let { children, data }: { children: any; data: LayoutData } = $props();
 </script>
 
 <!-- Left Sidebar Provider -->
 <Sidebar.Provider id="left" shortcutKey="b">
-	<AppSidebar side="left" id="left" class=""/>
+	<AppSidebar side="left" id="left" class="" user={data.user} playlists={data.playlists} />
 	<!-- Right Sidebar Provider -->
 	<Sidebar.Provider id="right" shortcutKey="B">
 		<!-- Main Content Area with Inset Styling -->

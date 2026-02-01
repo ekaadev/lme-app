@@ -1,31 +1,5 @@
 <script lang="ts" module>
 	import BotIcon from '@lucide/svelte/icons/bot';
-
-	const data = {
-		user: {
-			name: 'shadcn',
-			email: 'm@example.com',
-			avatar: ''
-		},
-		playlists: [
-			{
-				id: '1',
-				name: 'My Playlist #4',
-				imageUrl: '',
-				songCount: 24,
-				owner: 'Eka'
-			},
-			{
-				id: '2',
-				name: 'My Playlist #3',
-				imageUrl: '',
-				songCount: 18,
-				owner: 'Eka'
-			}
-		],
-		navMain: [],
-		navSecondary: []
-	};
 </script>
 
 <script lang="ts">
@@ -34,8 +8,26 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import CommandIcon from '@lucide/svelte/icons/command';
 	import type { ComponentProps } from 'svelte';
+	import type { UserResponse } from '$lib/types/auth';
+	import type { PlaylistResponse } from '$lib/types/playlist';
 
-	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
+	// Props dari component termasuk user data dan playlists dari layout
+	let {
+		ref = $bindable(null),
+		user,
+		playlists = [],
+		...restProps
+	}: ComponentProps<typeof Sidebar.Root> & {
+		user?: UserResponse | null;
+		playlists?: PlaylistResponse[];
+	} = $props();
+
+	// Format user data untuk NavUser component
+	const navUser = $derived({
+		name: user?.username ?? 'Guest',
+		email: user?.email ?? '',
+		avatar: '' // Avatar URL jika ada
+	});
 </script>
 
 <Sidebar.Root bind:ref variant="inset" {...restProps}>
@@ -60,9 +52,9 @@
 		</Sidebar.Menu>
 	</Sidebar.Header>
 	<Sidebar.Content>
-		<NavMain playlists={data.playlists} />
+		<NavMain {playlists} username={user?.username} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<NavUser user={data.user} />
+		<NavUser user={navUser} />
 	</Sidebar.Footer>
 </Sidebar.Root>
