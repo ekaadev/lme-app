@@ -3,9 +3,10 @@
 
 import type { Handle } from '@sveltejs/kit';
 import type { UserResponse } from '$lib/types/auth';
+import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
 // Base URL untuk API backend
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+const API_BASE_URL = PUBLIC_API_BASE_URL;
 
 export const handle: Handle = async ({ event, resolve }) => {
 	// Ambil cookie jwt dari request

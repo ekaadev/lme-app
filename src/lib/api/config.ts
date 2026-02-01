@@ -1,7 +1,8 @@
 // Konfigurasi dasar untuk API client
 // Base URL untuk backend API
+import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
-export const API_BASE_URL = 'http://localhost:8000/api/v1';
+export const API_BASE_URL = PUBLIC_API_BASE_URL;
 
 // Tipe untuk respons API
 export interface ApiError {
