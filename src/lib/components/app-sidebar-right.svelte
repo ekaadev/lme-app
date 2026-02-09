@@ -182,8 +182,9 @@
 						</div>
 
 						<!-- Action Buttons -->
+						<!-- Di mobile selalu terlihat, di desktop hanya muncul saat hover -->
 						<div
-							class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100"
+							class="flex items-center gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100"
 						>
 							<!-- Add to Explain Button -->
 							{#if addedToExplain[song.id]}

@@ -134,10 +134,11 @@
 							</div>
 
 							<!-- Add to Explain Button -->
+							<!-- Di mobile selalu terlihat, di desktop hanya muncul saat hover -->
 							<Button
 								size="icon"
 								variant="ghost"
-								class="h-8 w-8 flex-shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+								class="h-8 w-8 flex-shrink-0 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100"
 								onclick={(e) => handleAddPlaylistToExplain(playlist.id, e)}
 								disabled={addingPlaylistId === playlist.id}
 								title="Add all songs to Explain"

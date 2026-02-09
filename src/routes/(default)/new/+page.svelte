@@ -12,6 +12,7 @@
 	import FrownIcon from '@lucide/svelte/icons/frown';
 	import MehIcon from '@lucide/svelte/icons/meh';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
+	import SearchPlusIcon from '@lucide/svelte/icons/search';
 
 	import { explainSongs } from '$lib/api/songs';
 	import { createHistory } from '$lib/api/history';
@@ -45,6 +46,17 @@
 		window.addEventListener('add-song', handleAddSong as EventListener);
 		return () => window.removeEventListener('add-song', handleAddSong as EventListener);
 	});
+
+	// Fungsi untuk toggle right sidebar dari floating button
+	function toggleRightSidebar() {
+		// Cari button trigger untuk right sidebar di header
+		const headerButtons = document.querySelectorAll('button[data-sidebar="trigger"]');
+		// Right sidebar trigger adalah button kedua (index 1) di header
+		const rightSidebarTrigger = headerButtons[1] as HTMLElement;
+		if (rightSidebarTrigger) {
+			rightSidebarTrigger.click();
+		}
+	}
 
 	function removeSong(songId: number) {
 		explainStore.removeSong(songId);
@@ -270,4 +282,15 @@
 			{/if}
 		</div>
 	</div>
+
+	<!-- Floating Action Button untuk Mobile Device -->
+	<!-- Button ini hanya muncul di layar mobile untuk memudahkan akses pencarian lagu -->
+	<Button
+		size="icon"
+		onclick={toggleRightSidebar}
+		class="fixed right-6 bottom-6 z-50 h-14 w-14 rounded-full shadow-lg md:hidden"
+		title="Cari dan tambah lagu"
+	>
+		<SearchPlusIcon class="size-6" />
+	</Button>
 </div>
